@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAz9-vrux41Esxf1fGdKPWEzEcecE3jTaM&libraries=drawing,places"></script>
+    
+<script type="text/javascript" src="js/utils.js"></script>
+<script>
+var initialcordinates;
+var finalcoordinates;
+var coordinates=[];
+var polyline;
+var map;
+window.onload = function(e){
+	
+	initialcordinates = getUserLocation();
+	//initialcordinates = getAutoUserLocation();
+
+	initialize();
+	coordinates.push(initialcordinates);
+	setTimeout(getlocation,1000);
+}
+function initialize(){
+	var mapOptions = {
+		    zoom: 17,
+		    center: initialcordinates
+		  };
+		  map = new google.maps.Map(document.getElementById('map'), mapOptions);
+}
+//window.setInterval(getlocation, 1000);
+function getlocation(){
+	finalcoordinates = getUserLocation();
+	//finalcoordinates = getAutoUserLocation();
+	if(changeInCoordinates(initialcordinates,finalcoordinates)){
+		
+		initialcordinates=finalcoordinates;
+		coordinates.push(initialcordinates);
+		updateMap();
+	}
+	setTimeout(getlocation,1000);
+}
+
+//window.setInterval(updateMap, 1000);
+function updateMap(){
+	if(polyline!=undefined)
+		polyline.setMap(null);
+	 polyline = new google.maps.Polyline({
+		    path: coordinates,
+		    strokeColor: 'black',
+		    strokeWeight: 3
+		  });
+	 map.setCenter(finalcoordinates);
+		  polyline.setMap(map);
+		
+}
+
+</script>
+<title>GPS Tracker</title>
+</head>
+<body>
+<div id="header"></div>
+<div id="map" style="width:100%;height:500px"></div>
+</body>
+</html>
